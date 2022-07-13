@@ -1,5 +1,5 @@
 import { Handler } from "@netlify/functions";
-import { render } from "./render.server";
+import { render } from "src/render/render.server";
 
 //@ts-ignore
 import manifest from "../dist/manifest.json";

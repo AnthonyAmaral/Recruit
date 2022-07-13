@@ -8,7 +8,7 @@
     "build": "tsc && yarn build:client && yarn build:server",
     "build:client": "vite build",
     "build:server": "SSR=true vite build",
-    "live": "netlify dev -d dist -c \"yarn build:server --watch\""
+    "live": "yarn build:client && netlify dev -d dist -c \"yarn build:server --watch\""
   },
   "dependencies": {
     "react": "^18.2.0",

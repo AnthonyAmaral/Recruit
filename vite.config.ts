@@ -13,7 +13,7 @@ export default defineConfig({
     ssr: SSR && "server/handler.ts",
     outDir: SSR ? "netlify/functions" : "dist",
     rollupOptions: {
-      input: "src/render.client.tsx",
+      input: "src/render/render.client.tsx",
     },
   },
 });

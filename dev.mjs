@@ -11,7 +11,7 @@ const vite = await createServer({
 const server = new Server((req, res) => {
   vite.middlewares(req, res, async () => {
     /** @type {import('./server/render.server').render} */
-    const render = (await vite.ssrLoadModule("/src/render.server.tsx")).render;
+    const render = (await vite.ssrLoadModule("/server/render.server.tsx")).render;
 
     let html = render({ url: req.url || "/", manifest: {} });
     html = await vite.transformIndexHtml(req.url || "/", html);

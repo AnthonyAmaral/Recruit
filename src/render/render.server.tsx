@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
-import ReactDOMServer from "react-dom/server";
+import { renderToString } from "react-dom/server";
 import { Manifest } from "vite";
-import { App } from "src/App";
+import { App, AppProps } from "src/App";
 
 export interface RenderProps {
   url: string;
@@ -9,17 +9,19 @@ export interface RenderProps {
 }
 
 export function render({ url, manifest }: RenderProps) {
-  const app = ReactDOMServer.renderToString(
+  const props: AppProps = { url };
+
+  const body = renderToString(
     <StrictMode>
-      <App url={url} />
+      <App {...props} />
     </StrictMode>
   );
 
-  return template(manifest).replace("<!--app-->", app);
+  return template(manifest, props, body);
 }
 
-function template(manifest: Manifest) {
-  const entry = "src/render.client.tsx";
+function template(manifest: Manifest, props: AppProps, body: string) {
+  const entry = "src/render/render.client.tsx";
   const src = manifest[entry] || {};
   const css = src.css || [];
 
@@ -32,7 +34,8 @@ function template(manifest: Manifest) {
     ${css.reduce((p, n) => `<link rel="stylesheet" href="/${n}">`, "")}
   </head>
   <body>
-    <div id="app"><!--app--></div>
+    <div id="app">${body}</div>
+    <script>window.APP_PROPS=${JSON.stringify(props)};</script>
     <script type="module" src="/${src.file || entry}"></script>
   </body>
 </html>`;
