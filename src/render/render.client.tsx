@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { App, AppProps } from "src/components/App";
 
-import "src/styles/index.css";
+import "src/styles/main.css";
 
 declare global {
   interface Window {
