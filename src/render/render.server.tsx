@@ -1,23 +1,34 @@
 import { StrictMode } from "react";
-import { renderToString } from "react-dom/server";
+import { renderToPipeableStream } from "react-dom/server";
 import { Manifest } from "vite";
-import { App, AppProps } from "src/App";
+import { App, AppProps } from "src/components/App";
+import { Writable } from "stream";
 
 export interface RenderProps {
   url: string;
   manifest: Manifest;
 }
 
-export function render({ url, manifest }: RenderProps) {
-  const props: AppProps = { url };
+export function render({ url, manifest }: RenderProps): Promise<string> {
+  return new Promise((resolve) => {
+    const props: AppProps = { url };
 
-  const body = renderToString(
-    <StrictMode>
-      <App {...props} />
-    </StrictMode>
-  );
+    let body = "";
+    const writer = new Writable();
+    writer._write = (chunk) => (body += String(chunk));
 
-  return template(manifest, props, body);
+    const stream = renderToPipeableStream(
+      <StrictMode>
+        <App {...props} />
+      </StrictMode>,
+      {
+        onAllReady() {
+          stream.pipe(writer);
+          resolve(template(manifest, props, body));
+        },
+      }
+    );
+  });
 }
 
 function template(manifest: Manifest, props: AppProps, body: string) {

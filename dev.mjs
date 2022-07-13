@@ -13,7 +13,7 @@ const server = new Server((req, res) => {
     /** @type {import('./src/render/render.server').render} */
     const render = (await vite.ssrLoadModule("/src/render/render.server.tsx")).render;
 
-    let html = render({ url: req.url || "/", manifest: {} });
+    let html = await render({ url: req.url || "/", manifest: {} });
     html = await vite.transformIndexHtml(req.url || "/", html);
 
     res.statusCode = 200;

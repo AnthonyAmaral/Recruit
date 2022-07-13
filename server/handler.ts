@@ -5,7 +5,7 @@ import { render } from "src/render/render.server";
 import manifest from "../dist/manifest.json";
 
 export const handler: Handler = async (event) => {
-  const body = render({ url: event.rawUrl, manifest });
+  const body = await render({ url: event.rawUrl, manifest });
 
   return {
     statusCode: 200,
