@@ -10,7 +10,7 @@ const vite = await createServer({
 
 const server = new Server((req, res) => {
   vite.middlewares(req, res, async () => {
-    /** @type {import('./server/render.server').render} */
+    /** @type {import('./src/render/render.server').render} */
     const render = (await vite.ssrLoadModule("/server/render.server.tsx")).render;
 
     let html = render({ url: req.url || "/", manifest: {} });
