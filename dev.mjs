@@ -1,24 +1,30 @@
 //@ts-check
 
-import { Server } from "http";
-import { createServer } from "vite";
+import { createServer } from "http";
+import { createServer as createViteServer } from "vite";
 
-const vite = await createServer({
+const vite = await createViteServer({
   appType: "custom",
   server: { middlewareMode: true, watch: { usePolling: true, interval: 100 } },
 });
 
-const server = new Server((req, res) => {
+const server = createServer((req, res) => {
   vite.middlewares(req, res, async () => {
-    /** @type {import('./src/render/render.server').render} */
-    const render = (await vite.ssrLoadModule("/src/render/render.server.tsx")).render;
+    try {
+      /** @type {import('./src/render/render.server').render} */
+      const render = (await vite.ssrLoadModule("/src/render/render.server.tsx")).render;
 
-    let html = await render({ url: req.url || "/", manifest: {} });
-    html = await vite.transformIndexHtml(req.url || "/", html);
+      let html = await render({ url: req.url || "/", manifest: {} });
+      html = await vite.transformIndexHtml(req.url || "/", html);
 
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "text/html");
-    res.end(html);
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "text/html");
+      res.end(html);
+    } catch (e) {
+      vite.ssrFixStacktrace(e);
+      res.statusCode = 500;
+      res.end(e.stack);
+    }
   });
 });
 

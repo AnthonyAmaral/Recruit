@@ -1,7 +1,5 @@
 import { Handler } from "@netlify/functions";
-import { render } from "src/render/render.server";
-
-//@ts-ignore
+import { render } from "src/render/render.server"; //@ts-ignore
 import manifest from "../dist/manifest.json";
 
 export const handler: Handler = async (event) => {

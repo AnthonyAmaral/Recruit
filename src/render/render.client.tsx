@@ -8,6 +8,7 @@ import { getConfig } from "../config"
 
 
 import "src/styles/index.css";
+import "src/styles/main.css";
 
 declare global {
   interface Window {

@@ -9,14 +9,38 @@ export interface RenderProps {
   manifest: Manifest;
 }
 
-export function render({ url, manifest }: RenderProps): Promise<string> {
+import { Sequelize, Model, DataTypes } from "sequelize";
+
+const sequelize = new Sequelize({
+  database: process.env.DB_DATABASE,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  host: process.env.DB_HOST,
+  dialect: "mysql",
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
+});
+
+const Entry = sequelize.define("Entry", { date: DataTypes.STRING });
+
+// await sequelize.sync();
+
+export async function render({ url, manifest }: RenderProps): Promise<string> {
+  let timing = performance.now();
+  const entries = (await Entry.findOne())?.toJSON();
+  timing = performance.now() - timing;
+
+  const props: AppProps = { url, entries, timing };
+
+  let body = "";
+  const writer = new Writable();
+  writer._write = (chunk) => (body += String(chunk));
+
   return new Promise((resolve) => {
-    const props: AppProps = { url };
-
-    let body = "";
-    const writer = new Writable();
-    writer._write = (chunk) => (body += String(chunk));
-
     const stream = renderToPipeableStream(
       <StrictMode>
         <App {...props} />
@@ -24,7 +48,8 @@ export function render({ url, manifest }: RenderProps): Promise<string> {
       {
         onAllReady() {
           stream.pipe(writer);
-          resolve(template(manifest, props, body));
+          const html = template(manifest, props, body);
+          resolve(html);
         },
       }
     );
