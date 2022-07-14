@@ -4,17 +4,19 @@ const Card = lazy(() => import("./Card"));
 
 export interface AppProps {
   url: string;
+  entries: any;
+  timing: number;
 }
 
-export function App({ url }: AppProps) {
+export function App(props: AppProps) {
   return (
     <Suspense>
       <div>
-        <h1>Vite + React = {url}</h1>
+        <h1>Vite + React</h1>
 
         <Card />
 
-        <p>Click on the Vite and React logos to learn more</p>
+        <pre>{JSON.stringify({ props }, null, 2)}</pre>
       </div>
     </Suspense>
   );
