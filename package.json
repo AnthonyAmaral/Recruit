@@ -11,6 +11,7 @@
     "live": "yarn build && netlify dev -d dist -c \"yarn build:server --watch\""
   },
   "dependencies": {
+    "@auth0/auth0-react": "^1.10.2",
     "mysql2": "^2.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
