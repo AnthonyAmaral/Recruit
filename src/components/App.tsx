@@ -1,13 +1,10 @@
 import { lazy, Suspense } from "react";
 
-
 const Card = lazy(() => import("./Card"));
 const Login = lazy(() => import("./Login"));
 
 export interface AppProps {
   url: string;
-  entries: any;
-  timing: number;
 }
 
 export function App(props: AppProps) {
@@ -18,7 +15,7 @@ export function App(props: AppProps) {
 
         <Card />
 
-        <Login/>
+        <Login />
         <pre>{JSON.stringify({ props }, null, 2)}</pre>
       </div>
     </Suspense>
